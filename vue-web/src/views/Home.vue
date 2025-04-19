@@ -1,12 +1,12 @@
 <template>
+  <GlowingWave
+    width="1000"
+    height="200"
+    :amplitude="80"
+    :frequency="0.004"
+    :speed="0.02"
+  />
   <div class="main">
-    <GlowingWave
-      width="1000"
-      height="200"
-      :amplitude="80"
-      :frequency="0.004"
-      :speed="0.02"
-    />
     <section class="main__profile">
       <h2 class="main__profile-title">cookiii</h2>
       <h3 class="main__profile-subtitle">Frontend Developer</h3>
@@ -21,16 +21,39 @@
       </ul>
     </section>
   </div>
+  <div class="home">
+    <ThreeScene />
+  </div>
 </template>
 
 <script setup>
 import GlowingWave from "../components/animation/GlowingWave.vue";
+import ThreeScene from "../components/threejs/ThreeScene.vue";
+import { ref } from "vue";
+const profileText = ref(
+  "I am a frontend developer with a strong background in web development. I have experience in building responsive and interactive web applications using HTML, CSS, and JavaScript. I am also familiar with various frontend frameworks and libraries such as React, Vue, and Angular."
+);
+const skills = ref([
+  "HTML",
+  "CSS",
+  "JavaScript",
+  "Vue.js",
+  "Node.js",
+  "Git",
+  "Java"
+])
 </script>
 <style lang="scss" scoped>
 $color-bg: #ffffff;
 $color-text: #000000;
 $color-accent: #333333;
 $color-border: #000000;
+
+.home {
+  width: 100%;
+  height: 100%;
+}
+
 .main {
   padding: 40px 20px;
   max-width: 800px;
@@ -39,7 +62,6 @@ $color-border: #000000;
   &__profile {
     text-align: center;
     margin-bottom: 40px;
-    display: flex;
   }
 
   &__profile-title {
@@ -68,6 +90,7 @@ $color-border: #000000;
   }
 
   &__skills-list {
+    padding: 0;
     list-style: none;
     display: flex;
     flex-wrap: wrap;

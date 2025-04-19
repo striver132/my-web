@@ -1,16 +1,40 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
-
+import { createRouter, createWebHistory } from "vue-router";
+import Home from "../views/Home.vue";
+import NotFound from '../components/NotFound.vue'
 const routes = [
-  { path: '/', name: 'Home', component: Home },
-  { path: '/about', name: 'About', component: () => import('../views/About.vue') },
-  { path: '/services', name: 'Services', component: () => import('../views/Services.vue') },
-  { path: '/contact', name: 'Contact', component: () => import('../views/Contact.vue') },
-]
+  { path: "/", name: "Home", component: Home },
+  {
+    path: "/about",
+    name: "About",
+    component: () => import("../views/About.vue"),
+  },
+  {
+    path: "/services",
+    name: "Services",
+    component: () => import("../views/Services.vue"),
+  },
+  {
+    path: "/contact",
+    name: "Contact",
+    component: () => import("../views/Contact.vue"),
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    component: NotFound,
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.name === 'NotFound') {
+    console.warn(`Route not found: ${to.fullPath}`)
+  }
+  next()
 })
 
-export default router
+export default router;
