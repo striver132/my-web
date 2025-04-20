@@ -20,15 +20,30 @@
         </li>
       </ul>
     </section>
+    <section class="main__works">
+      <h3 class="main__works-title">Works</h3>
+      <div class="main__works-grid">
+        <div class="main__works-item"
+        v-for="work in works"
+        :key="work.title"
+        >
+        <div>
+          <h4>{{ work.title }}</h4>
+        </div>
+      </div>
+      </div>
+    </section>
   </div>
   <div class="home">
     <ThreeScene />
   </div>
+
 </template>
 
 <script setup>
 import GlowingWave from "../components/animation/GlowingWave.vue";
 import ThreeScene from "../components/threejs/ThreeScene.vue";
+
 import { ref } from "vue";
 const profileText = ref(
   "I am a frontend developer with a strong background in web development. I have experience in building responsive and interactive web applications using HTML, CSS, and JavaScript. I am also familiar with various frontend frameworks and libraries such as React, Vue, and Angular."
@@ -41,6 +56,18 @@ const skills = ref([
   "Node.js",
   "Git",
   "Java"
+])
+const works = ref([
+  {
+    title: "Project 1",
+    description: "Description of Project 1",
+    imageUrl: "https://via.placeholder.com/150",
+  },
+  {
+    title: "Project 2",
+    description: "Description of Project 2",
+    imageUrl: "https://via.placeholder.com/150",
+  },
 ])
 </script>
 <style lang="scss" scoped>
@@ -110,5 +137,30 @@ $color-border: #000000;
       background-color: $color-accent;
     }
   }
+
+  &__works {
+    margin-top: 40px;
+    text-align: center;
+  }
+
+  &__works-title {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+
+  &__works-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  &__works-item {
+    background-color: $color-bg;
+    border: 1px solid $color-border;
+    border-radius: 4px;
+    padding: 20px;
+    text-align: center;
+  }
+
 }
 </style>

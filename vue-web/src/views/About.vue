@@ -10,7 +10,7 @@
         title="My Latest Project"
         content="This is a description of my latest project, showcasing my skills in web development."
         :tags="['Web Development', 'Vue 3', 'SASS']"
-        imageUrl="src/assets/img/logo1.png"
+        imageUrl="https://web-data-1352125514.cos.ap-chongqing.myqcloud.com/logo%2F1.png"
         imageAlt="Project Thumbnail"
         :blueBorder="false"
         :dotCount="3"

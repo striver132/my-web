@@ -3,8 +3,8 @@
       <div class="app-footer__container">
         <!-- 网站信息 -->
         <div class="app-footer__brand">
-          <router-link to="/" class="app-footer__brand-link">MyApp</router-link>
-          <p class="app-footer__brand-desc">Building the future with innovation.</p>
+          <router-link to="/" class="app-footer__brand-link">My own website</router-link>
+          <p class="app-footer__brand-desc">An online space to record personal growth, interests and thoughts, including technical notes, life essays and project sharing.</p>
         </div>
   
   
@@ -19,8 +19,10 @@
               target="_blank"
               class="app-footer__social-link"
             >
+            <BiliIcon class="app-footer__social-icon"/>
               <span :class="`app-footer__social-icon app-footer__social-icon`">
                 {{ social.name }}
+                
               </span>
             </a>
           </div>
@@ -28,6 +30,7 @@
   
         <!-- 版权信息 -->
         <div class="app-footer__copyright">
+          <a href="https://beian.miit.gov.cn" class="app-footer__copyright-link">渝ICP备2025056568号-1</a>
           <p>&copy; {{ currentYear }} MyApp. All rights reserved.</p>
         </div>
       </div>
@@ -36,11 +39,11 @@
   
   <script setup>
   import { computed } from 'vue'
-  
+  import BiliIcon from '../icon/BiliIcon.vue'
   
   // 社交媒体链接
   const socialLinks = [
-    { name: 'Tiktok', url: '#' },
+    { name: 'Bilibili', url: 'https://space.bilibili.com/435671813?spm_id_from=333.1007.0.0' },
   ]
   
   // 动态年份
@@ -166,6 +169,15 @@
       border-top: 1px solid #333;
       font-size: 0.85rem;
       color: #999;
+      &-link {
+        color: #999;
+        text-decoration: none;
+        transition: color 0.3s;
+  
+        &:hover {
+          color: #fff;
+        }
+      }
     }
   
     // 响应式设计
