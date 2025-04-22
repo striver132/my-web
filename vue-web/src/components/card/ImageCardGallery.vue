@@ -36,30 +36,7 @@
     </div>
 
     <div class="card-gallery__cta">
-      <h2 class="card-gallery__cta-title">JOIN THE CROWD</h2>
-      <div class="card-gallery__social-buttons">
-        <a
-          href="#"
-          class="card-gallery__social-button card-gallery__social-button--twitter"
-        >
-          <span class="card-gallery__social-icon">𝕏</span>
-          TWITTER
-        </a>
-        <a
-          href="#"
-          class="card-gallery__social-button card-gallery__social-button--telegram"
-        >
-          <span class="card-gallery__social-icon">✈️</span>
-          TELEGRAM
-        </a>
-        <a
-          href="#"
-          class="card-gallery__social-button card-gallery__social-button--instagram"
-        >
-          <span class="card-gallery__social-icon">📷</span>
-          INSTAGRAM
-        </a>
-      </div>
+      
     </div>
   </div>
 </template>

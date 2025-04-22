@@ -16,5 +16,8 @@ import AppFooter from './components/AppFooter.vue'
 .app-main {
   min-height: calc(100vh - 100px); /* 确保内容区域占满剩余空间 */
   padding: 2rem;
+  @media (max-width: 768px) {
+    padding: 0;
+  }
 }
 </style>

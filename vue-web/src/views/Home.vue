@@ -6,14 +6,22 @@
     :frequency="0.004"
     :speed="0.02"
   />
+  <div class="motto">
+    <p class="motto__text">———{{ $t('motto') }}</p>
+  </div>
   <div class="main">
+    <section class="main__Hero">
+      <div class="main__Hero-title">
+        <h1>欢迎来到我的网站</h1>
+      </div>
+    </section>
     <section class="main__profile">
       <h2 class="main__profile-title">cookiii</h2>
-      <h3 class="main__profile-subtitle">Frontend Developer</h3>
-      <p class="main__profile-text">{{ profileText }}</p>
+      <h3 class="main__profile-subtitle">{{ $t('Frontend__Developer') }}</h3>
+      <p class="main__profile-text">{{ $t('profileText') }}</p>
     </section>
     <section class="main__skills">
-      <h3 class="main__skills-title">Skills</h3>
+      <h3 class="main__skills-title">{{ $t('Skills') }}</h3>
       <ul class="main__skills-list">
         <li class="main__skills-item" v-for="skill in skills" :key="skill">
           {{ skill }}
@@ -45,9 +53,7 @@ import GlowingWave from "../components/animation/GlowingWave.vue";
 import ThreeScene from "../components/threejs/ThreeScene.vue";
 
 import { ref } from "vue";
-const profileText = ref(
-  "I am a frontend developer with a strong background in web development. I have experience in building responsive and interactive web applications using HTML, CSS, and JavaScript. I am also familiar with various frontend frameworks and libraries such as React, Vue, and Angular."
-);
+
 const skills = ref([
   "HTML",
   "CSS",
@@ -75,7 +81,20 @@ $color-bg: #ffffff;
 $color-text: #000000;
 $color-accent: #333333;
 $color-border: #000000;
+.motto {
+  width: 100%;
+  text-align: right;
+  
+  &__text {
+    max-width: 800px;
+    margin-left: auto;
+    @media (max-width: 768px) {
 
+
+      max-width: 200px;
+    }
+  }
+}
 .home {
   width: 100%;
   height: 100%;
@@ -85,6 +104,10 @@ $color-border: #000000;
   padding: 40px 20px;
   max-width: 800px;
   margin: 0 auto;
+
+  &__Hero{
+    text-align: center;
+  }
 
   &__profile {
     text-align: center;
@@ -146,17 +169,21 @@ $color-border: #000000;
   &__works-title {
     font-size: 1.8rem;
     margin-bottom: 20px;
+    
   }
 
   &__works-grid {
+    color: #ffffff;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
+    background: #000;
   }
 
   &__works-item {
-    background-color: $color-bg;
-    border: 1px solid $color-border;
+    height: 10rem;
+    background-color: $color-border;
+    border: 2px solid $color-bg;
     border-radius: 4px;
     padding: 20px;
     text-align: center;

@@ -6,38 +6,32 @@
         <div class="profile-card__image-section">
           <div class="profile-card__image-container">
             <img
-              v-if="imageUrl"
-              :src="imageUrl"
+              v-if="currentImage"
+              :src="currentImage"
               alt="Profile"
               class="profile-card__image"
             />
-            <div
-              v-else
-              class="profile-card__image-placeholder"
-              :class="{
-                'profile-card__image-placeholder--blue-border': blueBorder,
-              }"
-            ></div>
+            <div v-else class="profile-card__image-placeholder"></div>
           </div>
 
           <div class="profile-card__dots">
             <div
-              v-for="n in 4"
-              :key="n"
+              v-for="(image, index) in images"
+              :key="index"
               class="profile-card__dot"
-              @click="activeDot = n"
-              :class="{ 'profile-card__dot--active': activeDot === n }"
+              @click="handleImageChange(index)"
+              :class="{ 'profile-card__dot--active': currentImageIndex === index }"
             ></div>
           </div>
         </div>
 
         <!-- 右侧内容部分 -->
         <div class="profile-card__text-section">
-          <h2 class="profile-card__title">about me</h2>
+          <h2 class="profile-card__title">{{ $t('about.About__Me') }}</h2>
 
           <div class="profile-card__content">
             <p class="profile-card__text">
-              {{ bio }}
+              {{ $t('about.self__introduction') }}
             </p>
 
             <div class="profile-card__skills">
@@ -60,12 +54,16 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
-defineProps({
-  imageUrl: {
-    type: String,
-    default: "",
+const props = defineProps({
+  images: {
+    type: Array,
+    default: () => [],  // 默认空数组
+  },
+  currentImageIndex: {
+    type: Number,
+    default: 0
   },
   bio: {
     type: String,
@@ -82,7 +80,17 @@ defineProps({
   },
 });
 
-const activeDot = ref(1);
+const emit = defineEmits(['update:currentImageIndex']);
+
+// 处理图片切换
+const handleImageChange = (index) => {
+  emit('update:currentImageIndex', index);
+};
+
+// 获取当前显示的图片
+const currentImage = computed(() => 
+  props.images[props.currentImageIndex] || ''
+);
 </script>
 
 <style lang="scss" scoped>
@@ -166,10 +174,6 @@ $desktop: 1024px;
     width: 100%;
     height: 100%;
     background-color: $color-black;
-
-    &--blue-border {
-      border: 10px solid $color-white;
-    }
   }
 
   &__dots {
@@ -244,10 +248,10 @@ $desktop: 1024px;
 
   &__button {
     position: absolute;
-    bottom: 1%;
+    bottom: 0.5%;
     right: 10%;
     @media (min-width: $tablet) {
-        bottom: 10%;
+        bottom: 5%;
         right: 10%;
     }
     button {

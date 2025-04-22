@@ -6,8 +6,8 @@
           <div class="profile-card__image-section">
             <div class="profile-card__image-container">
               <img 
-                v-if="imageUrl" 
-                :src="imageUrl" 
+                v-if="imageUrl || currentImage" 
+                :src="currentImage" 
                 :alt="imageAlt" 
                 class="profile-card__image"
               />
@@ -23,7 +23,7 @@
                 v-for="n in dotCount" 
                 :key="n" 
                 class="profile-card__dot"
-                @click="activeDot = n"
+                @click="handleDotClick(n-1)"
                 :class="{ 'profile-card__dot--active': activeDot === n }"
               ></div>
             </div>
@@ -55,9 +55,9 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue';
+  import { ref, computed } from 'vue';
   
-  defineProps({
+  const props = defineProps({
     title: {
       type: String,
       default: 'About Me'
@@ -85,10 +85,26 @@
     dotCount: {
       type: Number,
       default: 4
+    },
+    images: {
+      type: Array,
+      default: () => []
     }
   });
   
+  const currentIndex = ref(0);
+
+  const currentImage = computed(() => 
+    props.images[currentIndex.value] || ''
+  );
+
   const activeDot = ref(1);
+
+  // 在点击圆点时更新当前图片索引
+  const handleDotClick = (index) => {
+    currentIndex.value = index;
+    activeDot.value = index + 1;
+  };
   </script>
   
   <style lang="scss" scoped>
@@ -212,7 +228,7 @@
       font-weight: 700;
       margin: 0 0 20px;
       color: $color-black;
-      
+      text-align: center;
       @media (min-width: $tablet) {
         font-size: 2.5rem;
         text-align: left;

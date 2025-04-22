@@ -3,14 +3,14 @@
       <div class="app-footer__container">
         <!-- 网站信息 -->
         <div class="app-footer__brand">
-          <router-link to="/" class="app-footer__brand-link">My own website</router-link>
-          <p class="app-footer__brand-desc">An online space to record personal growth, interests and thoughts, including technical notes, life essays and project sharing.</p>
+          <router-link to="/" class="app-footer__brand-link">{{ $t('footer.webName') }}</router-link>
+          <p class="app-footer__brand-desc">{{ $t('footer.webIntroduction') }}</p>
         </div>
   
-  
+        <div>s</div>
         <!-- 社交媒体 -->
         <div class="app-footer__social">
-          <h3 class="app-footer__social-title">Follow Me</h3>
+          <h3 class="app-footer__social-title">{{ $t('footer.webFollow') }}</h3>
           <div class="app-footer__social-icons">
             <a
               v-for="social in socialLinks"
@@ -21,13 +21,12 @@
             >
             <BiliIcon class="app-footer__social-icon"/>
               <span :class="`app-footer__social-icon app-footer__social-icon`">
-                {{ social.name }}
-                
+                {{ social.name }}  
               </span>
             </a>
+            
           </div>
         </div>
-  
         <!-- 版权信息 -->
         <div class="app-footer__copyright">
           <a href="https://beian.miit.gov.cn" class="app-footer__copyright-link">渝ICP备2025056568号-1</a>
@@ -133,6 +132,7 @@
     &__social {
       &-title {
         font-size: 1.2rem;
+        margin-top: 0;
         margin-bottom: 1rem;
         color: #fff;
       }
