@@ -15,6 +15,11 @@ export default {
   profileText:
     "我是一名大三学生，热爱前端开发，熟练掌握 HTML、CSS、JavaScript 以及 Vue.js 等技术，曾参与多个项目实践，具备良好的编码能力和团队协作精神。",
   Skills: "技能",
+  Works:"作品",
+  project1:"个人网站",
+  project1__description:"记录个人成长的网站",
+  project2:"灵猫智慧+",
+  project2__description:"基于ResNet50架构和微调deepseek模型的一站式猫咪服务APP",
 
   about: {
     About__Me: "关于我",

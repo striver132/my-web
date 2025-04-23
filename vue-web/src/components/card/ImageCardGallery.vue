@@ -1,328 +1,433 @@
 <template>
-  <div class="card-gallery">
-    <div class="card-gallery__container">
-      <div
-        v-for="(card, index) in cards"
-        :key="index"
-        class="card-gallery__card"
-        :class="{ 'card-gallery__card--active': activeCard === index }"
-        :style="{
-          backgroundColor: card.bgColor,
-          transform: getCardTransform(index),
-          zIndex: getZIndex(index),
-        }"
-        @mouseenter="handleMouseEnter(index)"
-        @mouseleave="handleMouseLeave"
+  <div 
+    class="gallery"
+    @mouseenter="isHovering = true"
+    @mouseleave="handleMouseLeave"
+    @wheel="handleWheel"
+    @mousedown="startDrag"
+    @mouseup="stopDrag"
+    @mousemove="onDrag"
+    @touchstart="startTouch"
+    @touchmove="onTouch"
+    @touchend="stopTouch"
+    ref="galleryRef"
+  >
+    <div 
+      class="gallery__container" 
+      :style="{ transform: `translateX(${position}px)` }"
+      :class="{ 
+        'gallery__container--dragging': isDragging || isTouching,
+        'gallery__container--smooth': !isDragging && !isTouching 
+      }"
+    >
+      <!-- 克隆前面的卡片放在末尾，实现无限滚动效果 -->
+      <div 
+        v-for="(card, index) in displayCards" 
+        :key="`card-${index}`"
+        class="gallery__card"
+        :class="{ 'gallery__card--active': activeIndex === getOriginalIndex(index) }"
+        @click="setActiveCard(getOriginalIndex(index))"
       >
-        <div class="card-gallery__card-content">
-          <h3 class="card-gallery__title" :style="{ color: card.textColor }">
-            {{ card.title }}
-          </h3>
-          <div
-            v-if="card.subtitle"
-            class="card-gallery__subtitle"
-            :style="{ color: card.textColor }"
-          >
-            {{ card.subtitle }}
+        <div class="gallery__card-inner">
+          <div class="gallery__card-image">
+            <img :src="card.image" :alt="card.title">
           </div>
-          <div v-if="card.image" class="card-gallery__image-container">
-            <img :src="card.image" alt="" class="card-gallery__image" />
-          </div>
-          <div v-if="card.badge" class="card-gallery__badge">
-            {{ card.badge }}
+          <div class="gallery__card-content">
+            <h3 class="gallery__card-title">{{ card.title }}</h3>
+            <p class="gallery__card-description">{{ card.description }}</p>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="card-gallery__cta">
-      
+    
+    <div class="gallery__indicators">
+      <span 
+        v-for="(card, index) in cards" 
+        :key="`indicator-${index}`"
+        class="gallery__indicator"
+        :class="{ 'gallery__indicator--active': activeIndex === index }"
+        @click="setActiveCard(index)"
+      ></span>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 
+// 卡片数据
 const cards = [
   {
-    title: "RISE AND SHINE",
-    subtitle: "BETTER TOGETHER IN WEB3",
-    bgColor: "#9590D8",
-    textColor: "#0000FF",
-  },
-  {
-    title: "KEY SOFT SKILLS*",
-    subtitle: "WEB3 EDITION",
-    bgColor: "#222222",
-    textColor: "#FFFFFF",
-  },
-  {
-    title: "PLACE OF INDIVIDUALS IN WEB3",
-    subtitle: "OPINION EDITOR COINTELEGRAPH",
-    bgColor: "#FFFF00",
-    textColor: "#000000",
-    image: "/placeholder.svg?height=80&width=80",
-  },
-  {
-    title: "DEGLORIFYING CEOS",
-    bgColor: "#FF3B3B",
-    textColor: "#000000",
-    image: "/placeholder.svg?height=80&width=80",
-  },
-  {
-    title: "THEY FLED FROM WEB2 TO WEB3 AND NAILED IT",
-    bgColor: "#FF8C00",
-    textColor: "#000000",
-    badge: "Θ",
-  },
-  {
-    title: "WEB3 EMPLOYEES FROM TV SHOWS",
-    bgColor: "#6A0DAD",
-    textColor: "#FFFFFF",
-  },
-  {
-    title: "WORDS BANNED FROM WEB3 WORKPLACE",
-    bgColor: "#4CAF50",
-    textColor: "#FFFFFF",
-    badge: "5",
+    title: "城市建筑",
+    description: "现代都市的黑白视角",
+    image: "/placeholder.svg?height=400&width=300"
   },
 ];
 
-const activeCard = ref(3); // Start with middle card active
-const hoverCard = ref(null);
-const autoplayInterval = ref(null);
+// 为了实现无限滚动，我们在前后各复制一组卡片
+const displayCards = computed(() => {
+  return [...cards, ...cards, ...cards];
+});
 
-const handleMouseEnter = (index) => {
-  hoverCard.value = index;
-  if (autoplayInterval.value) {
-    clearInterval(autoplayInterval.value);
+const galleryRef = ref(null);
+const isHovering = ref(false);
+const isDragging = ref(false);
+const position = ref(0);
+const startX = ref(0);
+const startPosition = ref(0);
+const activeIndex = ref(0);
+
+// 卡片和容器尺寸
+const cardWidth = ref(300);
+const cardGap = ref(20);
+const totalWidth = computed(() => cards.length * (cardWidth.value + cardGap.value));
+
+// 获取原始卡片索引（处理循环）
+const getOriginalIndex = (index) => {
+  return index % cards.length;
+};
+
+// 设置活动卡片
+const setActiveCard = (index) => {
+  activeIndex.value = index;
+  scrollToCard(index);
+};
+
+// 滚动到指定卡片
+const scrollToCard = (index) => {
+  // 计算目标位置，考虑到中间组的偏移
+  const middleGroupOffset = -totalWidth.value;
+  const targetPosition = middleGroupOffset - (index * (cardWidth.value + cardGap.value));
+  
+  // 使用 CSS transition 类来控制动画
+  const container = galleryRef.value?.querySelector('.gallery__container');
+  if (container) {
+    container.style.transition = 'transform 0.5s ease';
+    position.value = targetPosition;
+    
+    // 动画结束后移除 transition
+    setTimeout(() => {
+      container.style.transition = 'none';
+      checkBoundary();
+      container.style.transition = 'transform 0.5s ease';
+    }, 500);
   }
 };
+
+// 处理滚轮事件
+const handleWheel = (e) => {
+  if (!isHovering.value) return;
+  
+  e.preventDefault();
+  
+  const container = galleryRef.value?.querySelector('.gallery__container');
+  if (container) {
+    container.style.transition = 'none';
+  }
+  
+  // 根据滚轮方向调整滚动位置
+  const delta = e.deltaY || e.deltaX;
+  const direction = delta > 0 ? -1 : 1;
+  
+  position.value += direction * 40;
+  checkBoundary();
+  updateActiveCard();
+};
+
+// 开始拖拽
+const startDrag = (e) => {
+  isDragging.value = true;
+  startX.value = e.clientX;
+  startPosition.value = position.value;
+  document.body.style.cursor = 'grabbing';
+  
+  const container = galleryRef.value?.querySelector('.gallery__container');
+  if (container) {
+    container.style.transition = 'none';
+  }
+};
+
+// 停止拖拽
+const stopDrag = () => {
+  if (isDragging.value) {
+    isDragging.value = false;
+    document.body.style.cursor = 'default';
+    
+    const container = galleryRef.value?.querySelector('.gallery__container');
+    if (container) {
+      container.style.transition = 'transform 0.5s ease';
+    }
+    
+    updateActiveCard();
+  }
+};
+
+// 拖拽中
+const onDrag = (e) => {
+  if (!isDragging.value) return;
+  
+  const dx = e.clientX - startX.value;
+  position.value = startPosition.value + dx;
+  checkBoundary();
+};
+
+// 添加触摸相关的状态
+const isTouching = ref(false);
+const touchStartX = ref(0);
+const touchStartY = ref(0);
+const isScrollingVertically = ref(false);
+
+// 开始触摸
+const startTouch = (e) => {
+  isTouching.value = true;
+  isScrollingVertically.value = false;
+  touchStartX.value = e.touches[0].clientX;
+  touchStartY.value = e.touches[0].clientY;
+  startPosition.value = position.value;
+  
+  const container = galleryRef.value?.querySelector('.gallery__container');
+  if (container) {
+    container.style.transition = 'none';
+  }
+};
+
+// 触摸移动
+const onTouch = (e) => {
+  if (!isTouching.value) return;
+  
+  const touchX = e.touches[0].clientX;
+  const touchY = e.touches[0].clientY;
+  
+  // 计算水平和垂直方向的移动距离
+  const deltaX = touchX - touchStartX.value;
+  const deltaY = touchY - touchStartY.value;
+  
+  // 如果是第一次移动，判断滑动方向
+  if (!isScrollingVertically.value && Math.abs(deltaY) > Math.abs(deltaX)) {
+    isScrollingVertically.value = true;
+    isTouching.value = false;
+    return;
+  }
+  
+  // 如果是垂直滚动，不处理横向滑动
+  if (isScrollingVertically.value) return;
+  
+  // 阻止页面滚动
+  e.preventDefault();
+  
+  // 更新位置
+  position.value = startPosition.value + deltaX;
+  checkBoundary();
+};
+
+// 结束触摸
+const stopTouch = () => {
+  if (isTouching.value) {
+    isTouching.value = false;
+    
+    const container = galleryRef.value?.querySelector('.gallery__container');
+    if (container) {
+      container.style.transition = 'transform 0.5s ease';
+    }
+    
+    updateActiveCard();
+  }
+};
+
+// 检查边界并实现无限滚动
+const checkBoundary = () => {
+  const middleGroupOffset = -totalWidth.value;
+  
+  if (position.value > 0) {
+    // 添加弹性效果
+    if (isTouching.value || isDragging.value) {
+      position.value = position.value * 0.3; // 减缓超出边界时的移动
+    } else {
+      const offset = position.value % totalWidth.value;
+      position.value = middleGroupOffset + offset;
+    }
+  }
+  
+  if (position.value < -2 * totalWidth.value) {
+    if (isTouching.value || isDragging.value) {
+      const overScroll = position.value + 2 * totalWidth.value;
+      position.value = -2 * totalWidth.value + overScroll * 0.3;
+    } else {
+      const offset = position.value % totalWidth.value;
+      position.value = middleGroupOffset + offset;
+    }
+  }
+};
+
+// 根据滚动位置更新活动卡片
+const updateActiveCard = () => {
+  if (!galleryRef.value) return;
+  
+  // 计算当前位置相对于中间组的偏移
+  const middleGroupOffset = -totalWidth.value;
+  const relativePosition = position.value - middleGroupOffset;
+  
+  // 计算最接近中心的卡片索引
+  const index = Math.round(Math.abs(relativePosition) / (cardWidth.value + cardGap.value));
+  activeIndex.value = index % cards.length;
+};
+
+// 初始化位置到中间组的开始
+onMounted(() => {
+  position.value = -totalWidth.value;
+  
+  // 监听窗口大小变化
+  window.addEventListener('resize', updateActiveCard);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateActiveCard);
+});
 
 const handleMouseLeave = () => {
-  hoverCard.value = null;
-  startAutoplay();
+  isHovering.value = false;
+  stopDrag();
 };
-
-const getZIndex = (index) => {
-  if (hoverCard.value === index) {
-    return 999; // 悬停卡片最上层
-  }
-  return cards.length - Math.abs(index - activeCard.value);
-};
-
-const getCardTransform = (index) => {
-  const offset = index - activeCard.value;
-  const radius = 800; // 弧形半径
-  const angleStep = 10; // 每张卡片之间的角度
-  const angle = offset * angleStep; // 计算当前卡片的角度
-
-  // 计算弧形位置
-  const radian = (angle * Math.PI) / 180;
-  const x = Math.sin(radian) * radius;
-  const z = Math.cos(radian) * radius - radius;
-
-  // 根据距离调整缩放
-  const scale = 1 - Math.abs(offset) * 0.1;
-
-  // 如果是当前悬停的卡片，添加上移效果
-  if (hoverCard.value === index) {
-    return `
-      perspective(1000px) 
-      translateX(${x}px) 
-      translateZ(${z + 100}px) 
-      translateY(-50px)
-      rotateY(${angle}deg) 
-      scale(${scale + 0.1})
-    `;
-  }
-
-  return `
-    perspective(1000px) 
-    translateX(${x}px) 
-    translateZ(${z}px) 
-    rotateY(${angle}deg) 
-    scale(${scale})
-  `;
-};
-
-const startAutoplay = () => {
-  autoplayInterval.value = setInterval(() => {
-    activeCard.value = (activeCard.value + 1) % cards.length;
-  }, 3000);
-};
-
-const resetAutoplay = () => {
-  if (autoplayInterval.value) {
-    clearInterval(autoplayInterval.value);
-    startAutoplay();
-  }
-};
-
-onMounted(() => {
-  startAutoplay();
-});
 </script>
 
 <style lang="scss" scoped>
-.card-gallery {
+.gallery {
+  $this: &;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 40px 0;
+  background-color: #121212;
+  touch-action: pan-y pinch-zoom; // 允许垂直滚动和缩放
+  
   &__container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 400px;
-    position: relative;
-    perspective: 1000px;
-    margin-bottom: 60px;
-    padding: 40px 0;
+    transition: none;
+    padding: 20px 60px;
+    
+    &--smooth {
+      transition: transform 0.5s ease;
+    }
+    
+    &--dragging {
+      transition: none;
+      cursor: grabbing;
+    }
   }
-
+  
   &__card {
-    position: absolute;
-    width: 220px;
-    height: 300px;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-    overflow: hidden;
-
-    &--active {
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
-    }
-
-    &:hover {
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
-    }
-  }
-
-  &__card-content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-
-  &__title {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin: 0 0 10px 0;
-    line-height: 1.2;
-  }
-
-  &__subtitle {
-    font-size: 0.8rem;
-    margin-bottom: 10px;
-  }
-
-  &__image-container {
-    margin-top: auto;
-    margin-bottom: auto;
-    text-align: center;
-  }
-
-  &__image {
-    max-width: 80px;
-    max-height: 80px;
+    flex: 0 0 auto;
+    width: 300px;
+    height: 450px;
+    margin-right: 20px;
     border-radius: 8px;
-  }
-
-  &__badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: white;
-    color: black;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-  }
-
-  &__cta {
-    text-align: center;
-    color: rgb(26, 26, 26);
-  }
-
-  &__cta-title {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-bottom: 30px;
-  }
-
-  &__social-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-
-  &__social-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
-    color: black;
-    border-radius: 30px;
-    padding: 10px 20px;
-    font-weight: bold;
-    text-decoration: none;
+    overflow: hidden;
     transition: all 0.3s ease;
-    min-width: 150px;
-
+    cursor: grab;
+    position: relative;
+    background-color: #1a1a1a;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    
     &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+      transform: translateY(-10px);
     }
-
-    &--twitter {
-      &:hover {
-        background-color: #1da1f2;
-        color: white;
+    
+    &--active {
+      transform: scale(1.05) translateY(-15px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      
+      #{$this}__card-title {
+        color: #ffffff;
       }
     }
-
-    &--telegram {
-      &:hover {
-        background-color: #0088cc;
-        color: white;
+    
+    &-inner {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    &-image {
+      height: 70%;
+      overflow: hidden;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(100%) contrast(120%);
+        transition: all 0.5s ease;
       }
     }
-
-    &--instagram {
-      &:hover {
-        background: linear-gradient(
-          45deg,
-          #f09433,
-          #e6683c,
-          #dc2743,
-          #cc2366,
-          #bc1888
-        );
-        color: white;
-      }
+    
+    &-content {
+      padding: 20px;
+      background-color: #1a1a1a;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    
+    &-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0 0 10px;
+      color: #e0e0e0;
+    }
+    
+    &-description {
+      font-size: 0.9rem;
+      color: #a0a0a0;
+      margin: 0;
     }
   }
-
-  &__social-icon {
-    margin-right: 8px;
+  
+  &__indicators {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  &__indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #4a4a4a;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &--active {
+      background-color: #ffffff;
+      transform: scale(1.2);
+    }
   }
 }
 
-// Add this to your global styles or App.vue
+// 全局样式
 body {
   margin: 0;
   padding: 0;
-  background-color: black;
-  color: white;
-  font-family: Arial, sans-serif;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  font-family: 'Arial', sans-serif;
+  color: #e0e0e0;
+  background-color: #121212;
+}
+
+// 响应式调整
+@media (max-width: 768px) {
+  .gallery {
+    padding: 20px 0;
+    
+    &__container {
+      padding: 10px 30px;
+    }
+    
+    &__card {
+      width: 250px; // 移动端卡片宽度可以适当调小
+      height: 375px;
+    }
+  }
 }
 </style>
