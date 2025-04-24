@@ -103,7 +103,7 @@ const changeLanguage = () => {
 const navItems = [
   { key: "nav.home", path: "/" },
   { key: "nav.about", path: "/about" },
-  { key: "nav.services", path: "/services" },
+  { key: "nav.other", path: "/other" },
   { key: "nav.contact", path: "/contact" },
 ];
 

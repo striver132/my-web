@@ -19,12 +19,17 @@
       <WildCard
         :title="t('about.Project__Experience')"
         :content="t('about.content2')"
-        :tags="courseTags"
+        :tags="experiencesTags"
         :images="ProjectImages"
         imageAlt="Project Thumbnail"
         :blueBorder="false"
-        :dotCount="3"
+        :dotCount="2"
       />
+      <div class="about__experience-title">
+        <h1>{{ t('frontendExperience.Experience') }}</h1>
+      </div>
+      <FrontendExperience/>
+      <SmartCatProject/>
     </section>
   </div>
 </template>
@@ -32,6 +37,8 @@
 <script setup>
 import ProfileCard from "../components/ProfileCardAlt.vue";
 import WildCard from "../components/card/WildCard.vue";
+import FrontendExperience from "../components/FrontendExperience.vue";
+import SmartCatProject from "../components/SmartCatProject.vue";
 import { useI18n } from "vue-i18n";
 import { ref, computed } from "vue";
 
@@ -43,13 +50,14 @@ const profileImages = [
 ];
 
 const EduImages = [
-  "/src/assets/img/logo-school.jpg",
+  "/src/assets/img/logo-school.png",
   "/src/assets/img/school.jpg",
   "/src/assets/img/school-map.jpg",
 ];
 
 const ProjectImages = [
   "https://web-data-1352125514.cos.ap-chongqing.myqcloud.com/logo%2F1.png",
+  "/src/assets/img/project2-logo.jpg"
 ];
 
 const activeImageIndex = ref(0);
@@ -69,4 +77,24 @@ const courseTags = computed(() => {
   }
   return tags;
 });
+const experiencesTags = computed(() => {
+  const tags = [];
+  for (let i = 0; i < 9; i++) {  // 因为major__course从0到12共13个课程
+    tags.push(t(`frontendExperience.experienceTags.${i}`));
+  }
+  return tags;
+});
 </script>
+<style lang="scss" scoped>
+  .about {
+    width: 100%;
+    height: 100%;
+    
+    &__experience-title{
+      text-align: center;
+      h1{
+        font-size: 2.5rem;
+      }
+    }
+  }
+</style>
