@@ -107,7 +107,7 @@ export default {
     tooling: {
       title: "构建与开发工具链",
       content:
-        "使用 Vite 快速构建开发环境，配置 .gitignore 与 extensions.json，规范化开发流程与团队协作。",
+        "使用 Vite 快速构建开发环境。",
     },
     versionControl: {
       title: "版本控制与协作",
@@ -118,77 +118,78 @@ export default {
 
 
   smartCat:{
-    projectTitle: "项目经验总结",
-    projectName: "项目名称：FelixAI 电商平台",
-    projectDescription: "FelixAI 是一款基于 Vue 3 构建的电商平台，涵盖商品浏览、购物车管理、订单支付、地址管理等完整购物流程。平台集成多个功能模块，致力于提供流畅、高效的用户体验。",
+    projectTitle: "团队项目经验",
+    projectName: "灵猫智汇+",
+    projectDescription: "本软件基于当今宠物市场规模的持续扩大、回升向好的市场环境以及其中宠物猫的饲养人群呈显著增长态势的市场环境，以及当前市场缺乏针对猫咪的综合性服务平台的实际需求，开发了的一款集人工智能视觉模型和deepseek-R1 AI智能体的综合性一站式服务软件，包含社区交流平台，猫咪宠物商城，宠物医生在线问诊，AI智能体打造AI医生，宠物医院路径规划，猫咪品种识别等功能。",
+    
+    
+    
     techStack: {
       title: "技术栈",
       0: "前端框架：Vue 3（Composition API + Script Setup）",
       1: "UI 组件库：Vant",
       2: "路由管理：Vue Router",
       3: "状态管理：Pinia",
-      4: "样式方案：SCSS（模块化 Scoped 样式）",
+      4: "后端框架：SpringBoot",
       5: "数据交互：Axios（RESTful API）"
     },
     modules: {
-      title: "核心功能模块",
+      title: "我负责的模块",
       0: {
-        title: "地址管理模块",
-        features: "功能：地址增删改查、地址选择与订单模块联动",
-        highlights: {
-          0:"监听动态路由参数，实现地址与订单信息同步",
-          1:"弹窗与确认模态框的交互设计，增强用户体验"
-        }
+        title: "AI医生",
+        features: "功能：用户与AI对话",
+        highlights: [
+          "阿里云交互式建模 PAI_DSW部署LLaMA-Factory微调deepseek-R1-1.5b，Ollama本地部署调用模型",
+          "前端页面设计、vue3实现，后端SpringBoot实现保存用户聊天和获取聊天历史记录"
+          
+        ]
       },
       1: {
-        title: "商品详情模块",
-        features: "功能：商品图文展示、规格选择、加入购物车、立即购买",
+        title: "宠物商城",
+        features: "功能：商品图文展示、规格选择、加入购物车、立即购买、地址管理、订单管理",
         highlights: [
-          "使用 ref 与 computed 实现响应式数据绑定",
+          "使用 onMounted 和异步加载优化页面加载速度",
           "借助 nextTick 优化 DOM 操作"
         ]
       },
       2: {
-        title: "商品列表模块",
-        features: "功能：商品分类筛选、跳转至详情页",
+        title: "在线问诊平台",
+        features: "功能：医生与用户实时聊天、医生列表、消息列表、历史聊天记录",
         highlights: [
-          "使用动态路由跳转",
-          "使用 ref 与事件绑定切换筛选条件"
+          "使用 WebSocket 实现用户与医生之间的双向即时通信",
+          "自动滚动到底部，确保用户始终看到最新消息"
         ]
       },
       3: {
-        title: "购物车模块",
-        features: "功能：商品展示与管理、生成订单、选择支付方式",
+        title: "医生信息后台管理",
+        features: "功能：医生信息增删改查",
         highlights: [
-          "onMounted 加载购物车数据",
-          ""
+          "支持通过医生姓名、专业方向、简介等关键字进行搜索",
+          "添加和编辑医生信息通过模态框实现，避免页面跳转，提升交互流畅性"
         ]
       },
-      4: {
-        title: "订单管理模块",
-        features: "功能：订单状态筛选、支付、收货、评价、删除",
-        highlights: [
-          "使用 v-if 动态展示订单状态",
-          "优化异步操作与错误处理"
-        ]
-      }
+      
     },
     highlights: {
       title: "项目亮点",
-      modular: "模块化开发：结构清晰、组件复用率高",
-      ux: "用户体验优化：丰富的动态交互和移动端友好设计",
-      performance: "性能优化：使用异步加载、onMounted 和 nextTick",
-      i18n: "国际化支持：中国省市区三级联动"
+      identification: "猫咪品种识别创新：结合ResNet50与迁移学习，配合混合精度训练、OneCycleLR调度与多进程加载，将识别准确率提升至98%。",
+      aiDoctor: "AI医生知识应用：基于DeepSeek-R1-1.5B模型，通过LoRA与清洗数据微调，结合LLaMA-Factory与Ollama部署，提升猫咪领域问答准确率。",
+      onlineAsk: "在线问诊平台：一键直连宠物医生，实现面对面交流，提升问诊效率，保障治疗时效。",
+      routePlan: "路线规划服务：集成百度地图API，提供宠物医院出行规划，满足紧急就医需求。",
+      petStore: "宠物商城平台：涵盖宠物猫及相关商品与保险，提供一站式全方位购物体验。",
+      socialCat: "猫咪社区互动：支持UGC内容分享与线上活动，如摄影比赛，增强用户互动与社区氛围。"
     },
     contribution: {
       title: "个人贡献",
       points: [
-        "独立开发地址模块，实现完整功能",
-        "优化商品详情交互逻辑",
-        "实现订单支付及状态管理功能",
-        "编写模块化 SCSS 样式，提升可维护性"
+        "负责AI医生模块：完成前端页面设计，基于Vue3实现用户与AI的聊天功能，使用Spring Boot实现聊天记录存储与历史记录查询。",
+        "基于LLaMA-Factory在阿里云PAI DSW对DeepSeek-R1-1.5B模型进行微调，并通过Ollama进行本地部署与调用。",
+        "独立开发宠物商城模块：实现商品展示、规格选择、购物车、订单管理等功能，并使用onMounted和nextTick优化加载与交互性能。",
+        "开发在线问诊平台：通过WebSocket实现医生与用户实时双向通信，优化消息列表滚动体验。",
+        "完成医生后台管理模块：实现医生信息的增删改查，支持关键词搜索，使用模态框优化编辑体验，提升交互效率。"
       ]
     },
+    
     result: {
       title: "项目成果",
       points: [
@@ -197,12 +198,7 @@ export default {
         "积累 Vue 3 项目实战经验"
       ]
     },
-    metrics: {
-      title: "可量化成果",
-      reuse: "代码复用率提升：30%",
-      speed: "页面加载速度优化：减少 20%",
-      satisfaction: "用户满意度：90% 正面反馈"
-    },
+   
     keywords: {
       title: "技术关键词",
       list: "Vue 3、Composition API、Vant、SCSS、Vue Router、Pinia、Axios、RESTful API、动态路由、模态框、条件渲染、异步加载"
