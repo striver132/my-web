@@ -60,7 +60,6 @@ export default {
       5: "Three.js",
       6: "Git",
       7: "响应式设计",
-      8: "Lazy Loading",
     },
     title: "个人网站开发经验（Vue 3 + Vite）",
     spaDevelopment: {
@@ -203,6 +202,11 @@ export default {
       title: "技术关键词",
       list: "Vue 3、Composition API、Vant、SCSS、Vue Router、Pinia、Axios、RESTful API、动态路由、模态框、条件渲染、异步加载"
     }
+  },
+
+  other:{
+    title:"简单记录",
+    cq:"重庆风光",
   },
 
   footer: {
