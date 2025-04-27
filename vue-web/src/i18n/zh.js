@@ -6,7 +6,8 @@ export default {
     portfolio: "项目集",
     contact: "联系方式",
     blog: "博客",
-    other:"其他",
+    other: "其他",
+    quickNav: "快速导航"
   },
 
   motto: "光波残影，不过瞬间；黑暗振动，永恒无边。",
@@ -207,6 +208,14 @@ export default {
   other:{
     title:"简单记录",
     cq:"重庆风光",
+  },
+
+  contact: {
+    name: "姓名",
+    email: "邮箱",
+    message: "留言",
+    sendMessage: "发送留言",
+    contactForm: "联系表单",
   },
 
   footer: {
