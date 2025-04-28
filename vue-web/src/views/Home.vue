@@ -12,7 +12,7 @@
   <div class="main">
     <section class="main__Hero">
       <div class="main__Hero-title">
-        <h1>欢迎来到我的网站</h1>
+        <h1></h1>
       </div>
     </section>
     <section class="main__profile">

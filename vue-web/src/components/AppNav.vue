@@ -76,13 +76,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { locale, t } = useI18n();
 
 // 支持的语言列表
-const languages = ["zh", "en", "jp"];
+const languages = ["zh", "en", "ja"];
 
 // 初始化语言，从 localStorage 读取
 onMounted(() => {
@@ -92,6 +92,14 @@ onMounted(() => {
   } else {
     locale.value = "zh"; // 默认语言
   }
+
+  // 添加点击事件监听器
+  document.addEventListener('click', handleClickOutside);
+});
+
+// 在组件卸载时移除事件监听器
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
 });
 
 // 语言切换
@@ -111,6 +119,19 @@ const navItems = [
 const isMenuOpen = ref(false);
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
+};
+
+// 处理点击外部事件
+const handleClickOutside = (event) => {
+  const mobileMenu = document.querySelector('.app-navbar__mobile-menu');
+  const toggleButton = document.querySelector('.app-navbar__toggle');
+  
+  if (isMenuOpen.value && 
+      mobileMenu && 
+      !mobileMenu.contains(event.target) && 
+      !toggleButton.contains(event.target)) {
+    isMenuOpen.value = false;
+  }
 };
 </script>
 
@@ -173,6 +194,26 @@ const toggleMenu = () => {
       transition: color 0.3s;
       border-radius: 5px;
       background: #181818;
+
+      select {
+        background: #181818;
+        color: #fbfbfb;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        outline: none;
+        
+        option {
+          background: #181818;
+          color: #fbfbfb;
+          padding: 10px;
+          
+          &:hover {
+            background: #c32727;
+          }
+        }
+      }
     }
 
     &-link {
@@ -270,6 +311,25 @@ const toggleMenu = () => {
 
   &__mobile-item {
     margin: 1rem 0;
+    
+    select {
+      background: #1e1e1e;
+      color: #fbfbfb;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      outline: none;
+      width: 20%;
+      
+      option {
+        background: #ffffff;
+        color: #4c4c4c;
+        padding: 10px;
+        
+       
+      }
+    }
   }
 
   &__mobile-link {
