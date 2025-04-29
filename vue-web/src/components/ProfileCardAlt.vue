@@ -44,7 +44,7 @@
               </span>
             </div>
             <div class="profile-card__button">
-              <button>Hire Me</button>
+              <button>{{ $t('about.Hire__Me') }}</button>
             </div>
           </div>
         </div>
@@ -251,8 +251,8 @@ $desktop: 1024px;
     bottom: 0.5%;
     right: 10%;
     @media (min-width: $tablet) {
-        bottom: 5%;
-        right: 10%;
+        bottom: 1%;
+        right: 5%;
     }
     button {
       padding: 10px 20px;

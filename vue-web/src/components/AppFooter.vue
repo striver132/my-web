@@ -29,7 +29,6 @@
             target="_blank"
             class="app-footer__social-link"
           >
-            <BiliIcon class="app-footer__social-icon" />
             <span :class="`app-footer__social-icon app-footer__social-icon--${social.name}`">
               {{ social.name }}
             </span>
@@ -49,13 +48,17 @@
 
 <script setup>
 import { computed } from "vue";
-import BiliIcon from "../icon/BiliIcon.vue";
+
 
 // 社交媒体链接
 const socialLinks = [
   {
     name: "Bilibili",
     url: "https://space.bilibili.com/435671813?spm_id_from=333.1007.0.0",
+  },
+  {
+    name: "Github",
+    url: "https://github.com/striver132",
   },
 ];
 
@@ -147,7 +150,7 @@ const currentYear = computed(() => new Date().getFullYear());
       text-decoration: none;
       font-size: 0.95rem;
       transition: color 0.3s;
-
+      
       &:hover {
         color: #fff;
       }
@@ -169,7 +172,7 @@ const currentYear = computed(() => new Date().getFullYear());
 
     &-icons {
       display: flex;
-      gap: 1rem;
+      gap: 2rem;
     }
 
     &-link {

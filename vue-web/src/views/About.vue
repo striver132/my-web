@@ -79,7 +79,7 @@ const courseTags = computed(() => {
 });
 const experiencesTags = computed(() => {
   const tags = [];
-  for (let i = 0; i < 9; i++) {  // 因为major__course从0到12共13个课程
+  for (let i = 0; i < 8; i++) {  // 因为major__course从0到12共13个课程
     tags.push(t(`frontendExperience.experienceTags.${i}`));
   }
   return tags;

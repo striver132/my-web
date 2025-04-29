@@ -44,6 +44,7 @@ export default {
       12: "大学コンピュータ基礎"
     },
 
+    Hire__Me: "私に連絡する",
     Project__Experience: "プロジェクト",
     content2: "個人ウェブサイトの開発",
     content3: "チームプロジェクト - 霊猫AI+"

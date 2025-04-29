@@ -81,7 +81,7 @@ scene.add(frontLight.target);
       model.scale.set(1.3, 1.3, 1.3);
 
       // 调整模型位置
-      model.position.set(0, 1, 0);
+      model.position.set(0, 1, -1);
 
       // 调整模型旋转
       model.rotation.set(0, 0, 0);
@@ -92,7 +92,7 @@ scene.add(frontLight.target);
       // 修改动画循环函数
       const animate = () => {
         if (!isActive) return; // 如果不活跃，停止渲染
-
+        model.rotation.y += 0.01; // 每帧旋转0.01弧度
         controls.update(); // 更新控制器
         animationFrameId = requestAnimationFrame(animate);
         renderer.render(scene, camera);
@@ -175,8 +175,38 @@ const iconCursorPlan = new THREE.Mesh(new THREE.PlaneGeometry(0.9,0.9),iconCurso
 iconCursorPlan.position.set(-3.5,1,-2.5)
 scene.add(iconCursorPlan)
 
-
-
+// 7. 创建git图标
+const iconGitTexture = new THREE.TextureLoader().load(
+  '/img3d/git.png',
+)
+const iconGitMaterial = new THREE.MeshPhongMaterial({map:iconGitTexture,transparent:true,side: THREE.DoubleSide})
+const iconGitPlan = new THREE.Mesh(new THREE.PlaneGeometry(0.9,0.9),iconGitMaterial)
+iconGitPlan.position.set(-1.5,1,-2.5)
+scene.add(iconGitPlan)
+//8.创建vscode图标
+const iconVscodeTexture = new THREE.TextureLoader().load(
+  '/img3d/vscode.png',
+)
+const iconVscodeMaterial = new THREE.MeshPhongMaterial({map:iconVscodeTexture,transparent:true,side: THREE.DoubleSide})
+const iconVscodePlan = new THREE.Mesh(new THREE.PlaneGeometry(0.9,0.9),iconVscodeMaterial)
+iconVscodePlan.position.set(0,1,-3.5)
+// scene.add(iconVscodePlan)
+//9.创建Google图标
+const iconGoogleTexture = new THREE.TextureLoader().load(
+  '/img3d/google.png',
+)
+const iconGoogleMaterial = new THREE.MeshPhongMaterial({map:iconGoogleTexture,transparent:true,side: THREE.DoubleSide})
+const iconGooglePlan = new THREE.Mesh(new THREE.PlaneGeometry(0.9,0.9),iconGoogleMaterial)
+iconGooglePlan.position.set(1.5,1,-2.5)
+scene.add(iconGooglePlan)
+//10.创建MySQL图标
+const iconMysqlTexture = new THREE.TextureLoader().load(
+  '/img3d/mysql.png',
+)
+const iconMysqlMaterial = new THREE.MeshPhongMaterial({map:iconMysqlTexture,transparent:true,side: THREE.DoubleSide})
+const iconMysqlPlan = new THREE.Mesh(new THREE.PlaneGeometry(0.9,0.9),iconMysqlMaterial)
+iconMysqlPlan.position.set(3,1,-2.5)
+scene.add(iconMysqlPlan)
 
 
 

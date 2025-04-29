@@ -45,6 +45,7 @@ export default {
       12: "大学计算机基础",
     },
 
+    Hire__Me: "联系我",
     Project__Experience: "项目",
     content2: "制作个人网站",
     content3:"团队项目-灵猫智慧+"
